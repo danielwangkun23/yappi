@@ -4,8 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
   <title>Yappi ⭐ 小勇士成长记</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>@import url('https://fonts.loli.net/css2?family=Nunito:wght@400;600;700;800;900&display=swap');</style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -280,6 +279,21 @@
           <div class="parent-section-title">奖励管理 <button class="add-small-btn" onclick="openAddReward()">+ 添加奖励</button></div>
           <div class="manage-list" id="reward-manage-list"></div>
         </div>
+        <div class="parent-section" style="margin-top:16px">
+          <div class="parent-section-title">⭐ 临时调整星星</div>
+          <div style="background:#fff;border-radius:16px;padding:16px;box-shadow:var(--shadow)">
+            <div style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px">为当前孩子（<span id="adj-child-name">-</span>）手动增减星星</div>
+            <input class="form-input" id="adj-reason" placeholder="原因（例如：表现特别棒）" maxlength="20" style="margin-bottom:10px"/>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input class="form-input" id="adj-amount" type="number" min="1" max="100" value="5" style="flex:1;margin-bottom:0"/>
+              <button onclick="adjustStars(1)" style="flex:1;height:46px;border-radius:14px;border:none;background:linear-gradient(135deg,#6BCB77,#4ECDC4);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">+增加</button>
+              <button onclick="adjustStars(-1)" style="flex:1;height:46px;border-radius:14px;border:none;background:linear-gradient(135deg,#FF8C42,#FF6B9D);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">-扣除</button>
+            </div>
+          </div>
+        </div>
+        <div class="parent-section" style="margin-top:20px;padding-bottom:36px">
+          <button onclick="logout()" style="width:100%;background:#FFF0F0;color:#FF6B6B;border:none;border-radius:16px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif">退出登录</button>
+        </div>
       </div>
     </div>
     <div class="nav">
@@ -395,7 +409,7 @@ function renderStreak(){const row=document.getElementById('streak-row');const st
 function renderTasks(){const list=document.getElementById('task-list');if(!tasks.length){list.innerHTML='<div class="empty-state"><div class="e-icon">📝</div><div class="e-text">还没有任务</div><div class="e-sub">去家长面板添加任务吧</div></div>';return}list.innerHTML=tasks.map(t=>{const done=todayLogs.has(t.id);return`<div class="task-card ${done?'done':''}" onclick="handleTask('${t.id}')"><div class="task-emoji-wrap">${t.emoji}</div><div class="task-info"><div class="task-name">${t.name}</div><div class="task-desc">${t.description}</div><div class="task-stars">⭐ +${t.stars} 星星</div></div><div class="task-check">${done?'✓':''}</div></div>`}).join('')}
 function renderShop(){const g=document.getElementById('shop-grid');if(!rewards.length){g.innerHTML='<div class="empty-state" style="grid-column:span 2"><div class="e-icon">🎁</div><div class="e-text">还没有奖励</div><div class="e-sub">去家长面板添加奖励吧</div></div>';return}g.innerHTML=rewards.map(r=>{const red=redemptions.has(r.id);const cant=(currentChild?.stars||0)<r.cost&&!red;return`<div class="shop-card ${red?'redeemed':''}" onclick="handleRedeem('${r.id}')"><span class="shop-emoji">${r.emoji}</span><div class="shop-name">${r.name}</div><div class="shop-cost ${cant?'cant':''}">${red?'✓ 已兑换':'⭐ '+r.cost}</div></div>`}).join('')}
 function renderMedals(){const s={totalTasks:totalTaskCount,streak:currentChild?.streak||0,totalStars:currentChild?.total_stars||0};document.getElementById('medals-grid').innerHTML=MEDALS.map(m=>{const val=Math.min(s[m.stat]||0,m.threshold);const pct=Math.round(val/m.threshold*100);return`<div class="medal-card ${val>=m.threshold?'':'locked'}"><span class="medal-emoji">${m.emoji}</span><div class="medal-name">${m.name}</div><div class="medal-desc">${m.desc}</div><div class="medal-progress"><div class="medal-fill" style="width:${pct}%"></div></div></div>`}).join('')}
-function renderParent(){document.getElementById('child-cards').innerHTML=children.map(c=>`<div class="child-card"><div class="child-avatar-lg">${c.avatar}</div><div class="child-card-info"><div class="child-card-name">${c.name}</div><div class="child-card-stats">⭐ ${c.stars} 颗 · 累计 ${c.total_stars} 颗 · 连续 ${c.streak} 天</div></div><div class="manage-actions"><button class="del-btn" onclick="deleteChild('${c.id}')">🗑️</button></div></div>`).join('');document.getElementById('task-manage-list').innerHTML=tasks.map(t=>`<div class="manage-card"><div class="manage-emoji">${t.emoji}</div><div class="manage-info"><div class="manage-name">${t.name}</div><div class="manage-meta">⭐ ${t.stars} 星星 · ${t.description}</div></div><div class="manage-actions"><button class="icon-btn" onclick="openEditTask('${t.id}')">✏️</button><button class="del-btn" onclick="deleteTask('${t.id}')">🗑️</button></div></div>`).join('')||'<div class="no-data">暂无任务，点击右上角添加</div>';document.getElementById('reward-manage-list').innerHTML=rewards.map(r=>`<div class="manage-card"><div class="manage-emoji">${r.emoji}</div><div class="manage-info"><div class="manage-name">${r.name}</div><div class="manage-meta">需要 ⭐ ${r.cost} 星星</div></div><div class="manage-actions"><button class="icon-btn" onclick="openEditReward('${r.id}')">✏️</button><button class="del-btn" onclick="deleteReward('${r.id}')">🗑️</button></div></div>`).join('')||'<div class="no-data">暂无奖励，点击右上角添加</div>'}
+function renderParent(){const adjEl=document.getElementById('adj-child-name');if(adjEl)adjEl.textContent=currentChild?.name||'-';document.getElementById('child-cards').innerHTML=children.map(c=>`<div class="child-card"><div class="child-avatar-lg">${c.avatar}</div><div class="child-card-info"><div class="child-card-name">${c.name}</div><div class="child-card-stats">⭐ ${c.stars} 颗 · 累计 ${c.total_stars} 颗 · 连续 ${c.streak} 天</div></div><div class="manage-actions"><button class="del-btn" onclick="deleteChild('${c.id}')">🗑️</button></div></div>`).join('');document.getElementById('task-manage-list').innerHTML=tasks.map(t=>`<div class="manage-card"><div class="manage-emoji">${t.emoji}</div><div class="manage-info"><div class="manage-name">${t.name}</div><div class="manage-meta">⭐ ${t.stars} 星星 · ${t.description}</div></div><div class="manage-actions"><button class="icon-btn" onclick="openEditTask('${t.id}')">✏️</button><button class="del-btn" onclick="deleteTask('${t.id}')">🗑️</button></div></div>`).join('')||'<div class="no-data">暂无任务，点击右上角添加</div>';document.getElementById('reward-manage-list').innerHTML=rewards.map(r=>`<div class="manage-card"><div class="manage-emoji">${r.emoji}</div><div class="manage-info"><div class="manage-name">${r.name}</div><div class="manage-meta">需要 ⭐ ${r.cost} 星星</div></div><div class="manage-actions"><button class="icon-btn" onclick="openEditReward('${r.id}')">✏️</button><button class="del-btn" onclick="deleteReward('${r.id}')">🗑️</button></div></div>`).join('')||'<div class="no-data">暂无奖励，点击右上角添加</div>'}
 // ACTIONS
 async function handleTask(tid){if(todayLogs.has(tid))return;const t=tasks.find(x=>x.id===tid);if(!t)return;todayLogs.add(tid);await db.from('task_logs').insert({child_id:currentChild.id,task_id:tid,task_name:t.name,stars_earned:t.stars,done_date:today()});currentChild.stars+=t.stars;currentChild.total_stars+=t.stars;totalTaskCount++;await db.from('children').update({stars:currentChild.stars,total_stars:currentChild.total_stars,last_checkin_date:today()}).eq('id',currentChild.id);renderHeader();renderTasks();renderShop();renderMedals();spawnBurst();showPraise(t)}
 async function handleRedeem(rid){const r=rewards.find(x=>x.id===rid);if(!r)return;if((currentChild.stars||0)<r.cost){showToast('星星不够哦，继续加油！💪');return}if(redemptions.has(rid)){showToast('今天已兑换过啦！');return}redemptions.add(rid);await db.from('redemptions').insert({child_id:currentChild.id,reward_id:rid,reward_name:r.name,stars_cost:r.cost});currentChild.stars-=r.cost;await db.from('children').update({stars:currentChild.stars}).eq('id',currentChild.id);renderHeader();renderShop();showToast('成功兑换：'+r.name+' 🎉')}
@@ -421,6 +435,28 @@ async function deleteReward(rid){if(!confirm('确定删除这个奖励吗？'))r
 // AI PRAISE
 async function showPraise(task){document.getElementById('praise-emoji').textContent=task.emoji;document.getElementById('praise-task').textContent='完成任务：'+task.name;document.getElementById('praise-stars').textContent='⭐ +'+task.stars+' 颗星星';document.getElementById('praise-text').innerHTML='<div class="dot-pulse"><span></span><span></span><span></span></div>';openModal('praise-overlay');const p=await getAI(task.name,task.stars);document.getElementById('praise-text').textContent=p}
 async function getAI(name,stars){if(AKEY==='YOUR_ANTHROPIC_KEY_HERE')return fallback(name);try{const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':AKEY,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,messages:[{role:'user',content:`你是儿童鼓励小精灵。孩子完成"${name}"得${stars}颗星。用1-2句活泼话夸他/她，适合3-12岁，可加emoji，不超过40字，只输出鼓励语。`}]})});const d=await r.json();return d.content?.[0]?.text||fallback(name)}catch{return fallback(name)}}
+async function adjustStars(dir){
+  if(!currentChild){showToast('请先选择孩子');return}
+  const amount=parseInt(document.getElementById('adj-amount').value)||5;
+  const reason=document.getElementById('adj-reason').value.trim()||'家长调整';
+  const delta=dir*amount;
+  if(dir===-1&&currentChild.stars<amount){showToast('星星不足，无法扣除');return}
+  currentChild.stars+=delta;
+  if(delta>0)currentChild.total_stars+=delta;
+  await db.from('children').update({stars:currentChild.stars,total_stars:currentChild.total_stars}).eq('id',currentChild.id);
+  await db.from('task_logs').insert({child_id:currentChild.id,task_id:'00000000-0000-0000-0000-000000000000',task_name:reason,stars_earned:delta,done_date:today()}).then(()=>{}).catch(()=>{});
+  renderHeader();renderShop();renderMedals();
+  const msg=dir===1?`+${amount} 颗星星已添加 ⭐`:`-${amount} 颗星星已扣除`;
+  showToast(msg);
+  document.getElementById('adj-reason').value='';
+}
+function logout(){
+  if(!confirm('确定退出登录吗？'))return;
+  localStorage.removeItem('yappi_pid');
+  localStorage.removeItem('yappi_cid');
+  parentData=null;children=[];currentChild=null;tasks=[];rewards=[];
+  showScreen('pin');
+}
 function fallback(n){const l=[`完成"${n}"，你真的超级棒！⭐`,`太厉害了！小英雄又完成任务啦！🚀`,`你做到了！为你鼓掌！👏`,`棒棒哒！今天又进步啦！🌟`,`哇哦！你真的太厉害了！🎉`];return l[Math.floor(Math.random()*l.length)]}
 // TABS & NAV
 function switchTab(name,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.getElementById('tab-'+name).classList.add('active');el.classList.add('active')}
