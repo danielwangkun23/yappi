@@ -13,8 +13,8 @@
   --sh:0 4px 20px rgba(155,107,255,.10);
   --cat-study:#4A90E2;--cat-habit:#6BCB77;--cat-moral:#FF8C42;--cat-sport:#9B6BFF;--cat-other:#9B8FAE;
 }
-html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;display:flex;justify-content:center}
-#app{width:100%;max-width:430px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;box-shadow:0 0 60px rgba(155,107,255,.18)}
+html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;display:flex;justify-content:center;width:100%;overflow-x:hidden}
+#app{width:100%;max-width:430px;min-height:100vh;background:var(--bg);display:flex;flex-direction:column;box-shadow:0 0 60px rgba(155,107,255,.18);overflow:hidden}
 .screen{display:none;flex-direction:column;flex:1}
 .screen.active{display:flex}
 /* LOADING */
@@ -63,7 +63,7 @@ html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;di
 #s-main{flex-direction:column;flex:1;overflow:hidden}
 .tab-content{display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0}
 .tab-content.active{display:flex}
-.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:88px}
+.scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:100px}
 .scroll::-webkit-scrollbar{display:none}
 /* HOME HEADER */
 .hdr{background:linear-gradient(135deg,#9B6BFF,#C77DFF 55%,#FF6B9D);padding:44px 18px 24px;border-radius:0 0 28px 28px;flex-shrink:0;position:relative;overflow:hidden}
@@ -364,7 +364,7 @@ html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;di
         <div class="report-hdr-title">📊 月度报告</div>
         <div class="report-hdr-sub" id="report-child-name">小宝贝的成长记录</div>
       </div>
-      <div class="scroll" style="padding-top:4px;padding-bottom:90px">
+      <div class="scroll" style="padding-top:4px">
         <div class="month-nav">
           <button class="mn-btn" onclick="changeMonth(-1)">‹</button>
           <div class="mn-label" id="month-label">2025年1月</div>
@@ -377,7 +377,7 @@ html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;di
           <div class="stat-card"><div class="stat-num" id="rpt-score" style="color:var(--gn)">-</div><div class="stat-lbl">完成率</div></div>
         </div>
         <div class="report-card" style="margin-top:10px">
-          <div class="rc-title">各类任务完成情况 vs 满分</div>
+          <div class="rc-title">各类任务完成情况</div>
           <div id="bm-rows"></div>
         </div>
         <div class="report-card">
@@ -392,7 +392,7 @@ html,body{font-family:'Nunito',sans-serif;background:#EDE0FF;min-height:100vh;di
         <div class="ph-title">👩‍👧 家长管理</div>
         <div class="ph-sub" id="ph-user">管理孩子、任务和奖励</div>
       </div>
-      <div class="scroll" style="padding-bottom:100px">
+      <div class="scroll">
         <div class="p-sec">
           <div class="p-sec-title">孩子档案 <button class="add-btn" onclick="openAddChild()">+ 添加</button></div>
           <div id="child-cards"></div>
@@ -551,7 +551,7 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>{s.class
 
 // AUTH
 function authTab(t,el){document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('auth-login').style.display=t==='login'?'block':'none';document.getElementById('auth-reg').style.display=t==='reg'?'block':'none';lPin='';rPin='';updDots('l-dots',0);updDots('r-dots',0)}
-function pp(ctx,d){const ref=ctx==='l'?'lPin':'rPin';if(window[ref].length>4)return;window[ref]+=d;console.log('PIN updated:',ref,'=',window[ref]);updDots(ctx+'-dots',window[ref].length);if(ctx==='l'&&lPin.length===4)setTimeout(doLogin,150);if(ctx==='r'&&rPin.length===4)setTimeout(doRegister,150)}
+function pp(ctx,d){if(ctx==='l'){if(lPin.length>4)return;lPin+=d;updDots('l-dots',lPin.length);if(lPin.length===4)setTimeout(doLogin,150)}else if(ctx==='r'){if(rPin.length>4)return;rPin+=d;updDots('r-dots',rPin.length);if(rPin.length===4)setTimeout(doRegister,150)}}
 function pd(ctx){const ref=ctx==='l'?'lPin':'rPin';window[ref]=window[ref].slice(0,-1);updDots(ctx+'-dots',window[ref].length)}
 function updDots(id,n,err=false){document.querySelectorAll('#'+id+' .pd').forEach((d,i)=>{d.classList.toggle('on',i<n&&!err);d.classList.toggle('err',err&&i<n)})}
 async function doLogin(){
@@ -747,7 +747,9 @@ async function renderReport(){
   const mStr=String(m).padStart(2,'0');
   document.getElementById('month-label').textContent=y+'年'+m+'月';
   const start=y+'-'+mStr+'-01';
-  const end=y+'-'+mStr+'-'+String(new Date(y,m,0).getDate()).padStart(2,'0');
+  const today_str=today();
+  const isCurrentMonth=reportMonth.getFullYear()===new Date().getFullYear()&&reportMonth.getMonth()===new Date().getMonth();
+  const end=isCurrentMonth?today_str:y+'-'+mStr+'-'+String(new Date(y,m,0).getDate()).padStart(2,'0');
   if(!curChild){return}
   const{data:logs}=await db.from('task_logs').select('*').eq('child_id',curChild.id).gte('done_date',start).lte('done_date',end);
   reportLogs=logs||[];
@@ -762,10 +764,10 @@ async function renderReport(){
     else cur=1;
     maxStreak=Math.max(maxStreak,cur);
   }
-  // daily tasks benchmark = tasks * days_in_month
-  const daysInMonth=new Date(y,m,0).getDate();
+  // daily tasks benchmark = tasks * days_from_1st_to_today
+  const daysInPeriod=Math.floor((new Date(end)-new Date(start))/86400000)+1;
   const dailyCount=tasks.filter(t=>t.frequency==='daily').length;
-  const benchmark=dailyCount*daysInMonth;
+  const benchmark=dailyCount*daysInPeriod;
   const rate=benchmark>0?Math.round(totalTasks/benchmark*100):0;
   document.getElementById('rpt-tasks').textContent=totalTasks;
   document.getElementById('rpt-stars').textContent=totalStars;
@@ -777,7 +779,7 @@ async function renderReport(){
     const catTasks=tasks.filter(t=>t.category===c);
     if(!catTasks.length)return;
     const catBenchmark=catTasks.reduce((s,t)=>{
-      let days=t.frequency==='daily'?daysInMonth:t.frequency==='weekday'?Math.floor(daysInMonth*5/7):Math.floor(daysInMonth/7);
+      let days=t.frequency==='daily'?daysInPeriod:t.frequency==='weekday'?Math.ceil(daysInPeriod*5/7):Math.ceil(daysInPeriod/7);
       return s+days;
     },0);
     const catDone=reportLogs.filter(l=>l.category===c).length;
@@ -794,11 +796,11 @@ async function renderReport(){
       <div class="bm-nums">${v.done}/${v.benchmark}</div>
     </div>`;
   }).join('')||'<div class="no-data">本月暂无数据</div>';
-  // trend chart
+  // trend chart - only show days with data
   const dailyMap={};reportLogs.forEach(l=>{dailyMap[l.done_date]=(dailyMap[l.done_date]||0)+1});
-  drawTrend(y,m,daysInMonth,dailyMap);
+  drawTrend(y,m,daysInPeriod,dailyMap,start);
 }
-function drawTrend(y,m,days,dailyMap){
+function drawTrend(y,m,days,dailyMap,start){
   const canvas=document.getElementById('trend-chart');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
@@ -976,10 +978,13 @@ async function showPraise(task){
   document.getElementById('pr-emoji').textContent=task.emoji;
   document.getElementById('pr-task').textContent='完成：'+task.name;
   document.getElementById('pr-stars').textContent='⭐ +'+task.stars+' 颗星星';
-  document.getElementById('pr-text').innerHTML='<div class="dot-pulse"><span></span><span></span><span></span></div>';
+  const fallbackMsg=fallback(task.name);
+  document.getElementById('pr-text').textContent=fallbackMsg;
   openM('mo-praise');
   const p=await getAI(task.name,task.stars);
-  document.getElementById('pr-text').textContent=p;
+  if(p!==fallbackMsg){
+    document.getElementById('pr-text').textContent=p;
+  }
 }
 async function getAI(name,stars){
   if(AKEY==='YOUR_ANTHROPIC_KEY_HERE')return fallback(name);
