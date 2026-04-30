@@ -551,7 +551,7 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>{s.class
 
 // AUTH
 function authTab(t,el){document.querySelectorAll('.auth-tab').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('auth-login').style.display=t==='login'?'block':'none';document.getElementById('auth-reg').style.display=t==='reg'?'block':'none';lPin='';rPin='';updDots('l-dots',0);updDots('r-dots',0)}
-function pp(ctx,d){const ref=ctx==='l'?'lPin':'rPin';if(window[ref].length>=4)return;window[ref]+=d;updDots(ctx+'-dots',window[ref].length);if(ctx==='l'&&lPin.length===4)setTimeout(doLogin,150)}
+function pp(ctx,d){const ref=ctx==='l'?'lPin':'rPin';if(window[ref].length>4)return;window[ref]+=d;console.log('PIN updated:',ref,'=',window[ref]);updDots(ctx+'-dots',window[ref].length);if(ctx==='l'&&lPin.length===4)setTimeout(doLogin,150);if(ctx==='r'&&rPin.length===4)setTimeout(doRegister,150)}
 function pd(ctx){const ref=ctx==='l'?'lPin':'rPin';window[ref]=window[ref].slice(0,-1);updDots(ctx+'-dots',window[ref].length)}
 function updDots(id,n,err=false){document.querySelectorAll('#'+id+' .pd').forEach((d,i)=>{d.classList.toggle('on',i<n&&!err);d.classList.toggle('err',err&&i<n)})}
 async function doLogin(){
