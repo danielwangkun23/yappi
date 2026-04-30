@@ -1,0 +1,62 @@
+.form-page {
+  padding: 32rpx 36rpx 120rpx;
+  background: var(--bg);
+  min-height: 100vh;
+}
+.ep-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10rpx; margin-bottom: 24rpx; }
+.ep-opt {
+  height: 80rpx; border-radius: 18rpx; border: 4rpx solid transparent;
+  background: #F5F0FF; font-size: 40rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.ep-opt.sel { border-color: var(--p); background: #EDE0FF; }
+
+.tpl-btn {
+  width: 100%; background: #F0E8FF; color: var(--p);
+  border-radius: 20rpx; padding: 22rpx; text-align: center;
+  font-size: 28rpx; font-weight: 800; margin-bottom: 32rpx;
+}
+
+/* 模板选择器 - 全屏覆盖，不依赖 fixed */
+.tpl-mask {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(61,44,78,0.5);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+}
+.tpl-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 52rpx 52rpx 0 0;
+  padding: 32rpx 36rpx 60rpx;
+  max-height: 75vh;
+  display: flex;
+  flex-direction: column;
+}
+.tpl-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+.tpl-title { font-size: 32rpx; font-weight: 900; color: var(--text); }
+.tpl-close { font-size: 32rpx; color: var(--muted); padding: 8rpx; }
+
+.tpl-cat-row { white-space: nowrap; margin-bottom: 20rpx; flex-shrink: 0; }
+.tpl-cat {
+  display: inline-block; padding: 10rpx 24rpx; margin-right: 12rpx;
+  border-radius: 30rpx; background: #F5F0FF;
+  font-size: 24rpx; font-weight: 700; color: var(--muted);
+}
+.tpl-cat.sel { background: var(--p); color: #fff; }
+
+.tpl-list { flex: 1; overflow: hidden; }
+.tpl-item {
+  display: flex; align-items: center; gap: 20rpx;
+  padding: 20rpx 0; border-bottom: 2rpx solid #F5F0FF;
+}
+.tpl-emoji { font-size: 44rpx; width: 72rpx; text-align: center; flex-shrink: 0; }
+.tpl-info { flex: 1; }
+.tpl-name { font-size: 28rpx; font-weight: 800; color: var(--text); }
+.tpl-desc { font-size: 22rpx; color: var(--muted); margin-top: 4rpx; }
+.tpl-stars { font-size: 24rpx; font-weight: 700; color: var(--or); flex-shrink: 0; }

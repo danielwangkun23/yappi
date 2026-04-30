@@ -1,0 +1,86 @@
+<view class="page">
+  <view class="parent-hdr">
+    <view class="ph-title">👩‍👧 家长管理</view>
+    <view class="ph-sub">账号：{{parent.username}}</view>
+  </view>
+
+  <scroll-view scroll-y class="scroll">
+    <!-- 孩子档案 -->
+    <view class="p-sec">
+      <view class="p-sec-title">
+        孩子档案
+        <view class="add-btn" bindtap="onOpenAddChild">+ 添加</view>
+      </view>
+      <view wx:for="{{children}}" wx:key="id" class="child-card">
+        <view class="cc-av">{{item.avatar}}</view>
+        <view class="cc-info">
+          <view class="cc-name">{{item.name}}</view>
+          <view class="cc-stats">⭐{{item.stars}}颗 · 累计{{item.total_stars}}颗 · 连续{{item.streak}}天</view>
+        </view>
+        <view class="db" bindtap="onDeleteChild" data-id="{{item.id}}" data-name="{{item.name}}">🗑️</view>
+      </view>
+    </view>
+
+    <!-- 任务管理 -->
+    <view class="p-sec" style="margin-top:24rpx">
+      <view class="p-sec-title">
+        任务管理
+        <view class="add-btn" bindtap="onOpenAddTask">+ 添加</view>
+      </view>
+      <block wx:for="{{tasksByCat}}" wx:key="cat">
+        <view class="cat-label" style="color:{{item.color}}">{{item.emoji}} {{item.cat}}</view>
+        <view wx:for="{{item.tasks}}" wx:key="id" wx:for-item="task" class="mg-card">
+          <view class="mg-emoji">{{task.emoji}}</view>
+          <view class="mg-info">
+            <view class="mg-name">{{task.name}}</view>
+            <view class="mg-meta">{{task.freqLabel}} · ⭐{{task.stars}}</view>
+          </view>
+          <view class="mg-acts">
+            <view class="ib" bindtap="onOpenEditTask" data-id="{{task.id}}">✏️</view>
+            <view class="db" bindtap="onDeleteTask" data-id="{{task.id}}">🗑️</view>
+          </view>
+        </view>
+      </block>
+      <view wx:if="{{!tasksByCat.length}}" class="no-data">暂无任务</view>
+    </view>
+
+    <!-- 奖励管理 -->
+    <view class="p-sec" style="margin-top:24rpx">
+      <view class="p-sec-title">
+        奖励管理
+        <view class="add-btn" bindtap="onOpenAddReward">+ 添加</view>
+      </view>
+      <view wx:for="{{rewards}}" wx:key="id" class="mg-card">
+        <view class="mg-emoji">{{item.emoji}}</view>
+        <view class="mg-info">
+          <view class="mg-name">{{item.name}}</view>
+          <view class="mg-meta">需要 ⭐{{item.cost}}</view>
+        </view>
+        <view class="mg-acts">
+          <view class="ib" bindtap="onOpenEditReward" data-id="{{item.id}}">✏️</view>
+          <view class="db" bindtap="onDeleteReward" data-id="{{item.id}}">🗑️</view>
+        </view>
+      </view>
+      <view wx:if="{{!rewards.length}}" class="no-data">暂无奖励</view>
+    </view>
+
+    <!-- 星星调整 -->
+    <view class="p-sec" style="margin-top:24rpx">
+      <view class="p-sec-title">⭐ 临时调整星星</view>
+      <view class="adj-card">
+        <view class="adj-info">为 <text class="adj-name">{{curChild.name}}</text> 调整</view>
+        <input class="fi" placeholder="原因（例如：今天表现特别棒）" maxlength="20" bindinput="onAdjReasonInput" value="{{adjReason}}" />
+        <view class="adj-row">
+          <input class="fi adj-num" type="number" value="{{adjAmount}}" bindinput="onAdjAmountInput" bindfocus="onAdjAmountFocus" bindblur="onAdjAmountBlur" />
+          <view class="adj-btn-add" bindtap="onAdjStars" data-dir="1">＋ 增加</view>
+          <view class="adj-btn-sub" bindtap="onAdjStars" data-dir="-1">－ 扣除</view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="p-sec" style="margin-top:32rpx;padding-bottom:20rpx">
+      <view class="logout-btn" bindtap="onLogout">退出登录</view>
+    </view>
+  </scroll-view>
+</view>

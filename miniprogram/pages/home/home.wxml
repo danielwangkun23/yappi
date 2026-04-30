@@ -1,0 +1,112 @@
+<view class="page">
+  <!-- 顶部 Header -->
+  <view class="hdr">
+    <view class="hdr-top">
+      <view class="hdr-left">
+        <view class="hdr-greeting">{{greeting}}</view>
+        <view class="hdr-child-btn" bindtap="onOpenSwitcher">
+          {{curChild.avatar}} {{curChild.name}} ▾
+        </view>
+      </view>
+      <navigator url="/pages/parent/parent" class="hdr-lock">🔐</navigator>
+    </view>
+    <view class="hdr-stars">
+      <text style="font-size:52rpx">⭐</text>
+      <view class="hdr-star-meta">
+        <view class="hdr-star-num">{{curChild.stars}}</view>
+        <view class="hdr-star-lbl">颗星星</view>
+        <view class="hdr-star-sub">累计 {{curChild.total_stars}} 颗</view>
+      </view>
+    </view>
+    <view class="hdr-level">{{level}}</view>
+  </view>
+
+  <scroll-view scroll-y class="scroll">
+    <!-- 本周打卡 -->
+    <view class="sec-title">📅 本周打卡</view>
+    <scroll-view scroll-x class="streak-row">
+      <view wx:for="{{streakDays}}" wx:key="index" class="sd">
+        <view class="sd-dot {{item.cls}}">{{item.icon}}</view>
+        <view class="sd-lbl">{{item.label}}</view>
+      </view>
+    </scroll-view>
+
+    <!-- 今日任务 -->
+    <view class="sec-title" style="margin-top:8rpx">
+      <text>今日任务</text>
+      <text class="task-progress">{{doneCount}}/{{todayCount}}</text>
+    </view>
+
+    <!-- 分类筛选 -->
+    <scroll-view scroll-x class="cat-tabs">
+      <view
+        wx:for="{{catTabs}}" wx:key="index"
+        class="ct {{item.active ? 'active' : ''}}"
+        style="{{item.active ? 'background:' + item.color : ''}}"
+        bindtap="onSetCatFilter"
+        data-cat="{{item.name}}"
+      >{{item.emoji}} {{item.name}}</view>
+    </scroll-view>
+
+    <!-- 任务列表 -->
+    <view class="task-list">
+      <view wx:if="{{filteredTasks.length === 0}}" class="empty-state">
+        <text class="es-icon">📝</text>
+        <view class="es-text">{{tasks.length ? '今天没有这类任务' : '还没有任务'}}</view>
+        <view class="es-sub">去家长面板添加吧</view>
+      </view>
+      <view
+        wx:for="{{filteredTasks}}" wx:key="id"
+        class="tc {{item.done ? 'done' : ''}}"
+        bindtap="onHandleTask"
+        data-id="{{item.id}}"
+      >
+        <view class="tc-emoji" style="background:{{item.catColor}}22">{{item.emoji}}</view>
+        <view class="tc-info">
+          <view class="tc-name">{{item.name}}</view>
+          <view class="tc-desc">{{item.description}}</view>
+          <view class="tc-meta">
+            <text class="tc-stars">⭐ +{{item.stars}}</text>
+            <text class="cat-tag" style="background:{{item.catColor}}">{{item.category}}</text>
+            <text class="tc-freq">{{item.freqLabel}}</text>
+          </view>
+        </view>
+        <view class="tc-check {{item.done ? 'done' : ''}}">{{item.done ? '✓' : ''}}</view>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 儿童切换弹窗 -->
+  <view class="popup-mask" wx:if="{{showSwitcher}}" bindtap="onCloseSwitcher">
+    <view class="popup-sheet" catchtap="">
+      <view class="popup-handle"></view>
+      <view class="popup-title">切换孩子</view>
+      <view
+        wx:for="{{children}}" wx:key="id"
+        class="sw-item {{item.id === curChild.id ? 'active' : ''}}"
+        bindtap="onSwitchChild"
+        data-id="{{item.id}}"
+      >
+        <text style="font-size:48rpx">{{item.avatar}}</text>
+        <view>
+          <view class="sw-name">{{item.name}}</view>
+          <view class="sw-stars">⭐{{item.stars}}颗</view>
+        </view>
+        <text wx:if="{{item.id === curChild.id}}" class="sw-check">✓</text>
+      </view>
+      <button class="btn-s" bindtap="onCloseSwitcher">取消</button>
+    </view>
+  </view>
+
+  <!-- 完成任务表扬弹窗 -->
+  <view class="popup-mask" wx:if="{{showPraise}}" bindtap="onClosePraise">
+    <view class="popup-sheet praise-wrap" catchtap="">
+      <view class="popup-handle"></view>
+      <text class="pr-emoji">{{praiseTask.emoji}}</text>
+      <view class="pr-task">完成：{{praiseTask.name}}</view>
+      <view class="pr-text">{{praiseMsg}}</view>
+      <view class="pr-stars">⭐ +{{praiseTask.stars}} 颗星星</view>
+      <button class="btn-p" bindtap="onClosePraise">太棒了，继续加油！🚀</button>
+    </view>
+  </view>
+</view>

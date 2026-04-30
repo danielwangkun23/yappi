@@ -1,0 +1,78 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #9B6BFF, #FF6B9D);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48rpx;
+}
+
+.logo { font-size: 120rpx; margin-bottom: 12rpx; }
+.title { color: #fff; font-size: 64rpx; font-weight: 900; letter-spacing: 6rpx; }
+.sub { color: rgba(255,255,255,0.7); font-size: 26rpx; font-weight: 600; margin-bottom: 60rpx; }
+
+.wx-btn {
+  width: 100%;
+  max-width: 680rpx;
+  background: #fff;
+  color: #07C160;
+  border: none;
+  border-radius: 56rpx;
+  padding: 32rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0,0,0,0.15);
+}
+.wx-icon { font-size: 36rpx; }
+
+.fi {
+  width: 100%;
+  max-width: 680rpx;
+  border: 4rpx solid rgba(255,255,255,0.4);
+  border-radius: 28rpx;
+  padding: 28rpx 32rpx;
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255,255,255,0.15);
+  margin-bottom: 16rpx;
+}
+
+.btn-p {
+  width: 100%;
+  max-width: 680rpx;
+  background: #fff;
+  color: var(--p);
+  border: none;
+  border-radius: 56rpx;
+  padding: 32rpx;
+  font-size: 32rpx;
+  font-weight: 800;
+  margin-top: 8rpx;
+}
+
+.btn-s {
+  width: 100%;
+  max-width: 680rpx;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  border: none;
+  border-radius: 56rpx;
+  padding: 28rpx;
+  font-size: 28rpx;
+  font-weight: 800;
+  margin-top: 16rpx;
+}
+
+.err-msg {
+  color: #FFD6D6;
+  font-size: 24rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+  text-align: center;
+}

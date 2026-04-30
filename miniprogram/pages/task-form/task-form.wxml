@@ -1,0 +1,61 @@
+<scroll-view scroll-y class="form-page">
+  <!-- 从模板选择入口 -->
+  <view class="tpl-btn" bindtap="onOpenTplPicker">📋 从模板库选择</view>
+
+  <view class="fl-label">任务名称</view>
+  <input class="fi" placeholder="例如：刷牙洁净" maxlength="12" bindinput="onNameInput" value="{{form.name}}" />
+
+  <view class="fl-label">任务描述</view>
+  <input class="fi" placeholder="例如：早晚各刷2分钟" maxlength="20" bindinput="onDescInput" value="{{form.description}}" />
+
+  <view class="fl-label">选择图标</view>
+  <view class="ep-grid">
+    <view wx:for="{{taskEmojis}}" wx:key="index"
+      class="ep-opt {{item === form.emoji ? 'sel' : ''}}"
+      bindtap="onSelectEmoji" data-emoji="{{item}}">{{item}}</view>
+  </view>
+
+  <view class="fl-label">任务大类</view>
+  <view class="pill-row">
+    <view wx:for="{{cats}}" wx:key="index"
+      class="pill {{item === form.category ? 'sel' : ''}}"
+      bindtap="onSelectCat" data-cat="{{item}}">{{item}}</view>
+  </view>
+
+  <view class="fl-label">执行频率</view>
+  <view class="pill-row">
+    <view wx:for="{{freqs}}" wx:key="k"
+      class="pill {{item.k === form.frequency ? 'sel' : ''}}"
+      bindtap="onSelectFreq" data-freq="{{item.k}}">{{item.l}}</view>
+  </view>
+
+  <view class="fl-label">星星奖励</view>
+  <input class="fi" type="number" value="{{form.stars}}" bindinput="onStarsInput" bindfocus="onStarsFocus" bindblur="onStarsBlur" style="width:160rpx" />
+
+  <button class="btn-p" style="margin-top:40rpx" bindtap="onSave">保存任务 ✓</button>
+</scroll-view>
+
+<!-- 模板选择器 -->
+<view class="tpl-mask" wx:if="{{showTplPicker}}" bindtap="onCloseTplPicker">
+  <view class="tpl-sheet" catchtap="">
+    <view class="tpl-hdr">
+      <view class="tpl-title">选择模板</view>
+      <view class="tpl-close" bindtap="onCloseTplPicker">✕</view>
+    </view>
+    <scroll-view scroll-x class="tpl-cat-row">
+      <view wx:for="{{tplCats}}" wx:key="index"
+        class="tpl-cat {{item === activeTplCat ? 'sel' : ''}}"
+        bindtap="onFilterTplCat" data-cat="{{item}}">{{item}}</view>
+    </scroll-view>
+    <scroll-view scroll-y class="tpl-list">
+      <view wx:for="{{filteredTpls}}" wx:key="id" class="tpl-item" bindtap="onSelectTpl" data-id="{{item.id}}">
+        <view class="tpl-emoji">{{item.emoji}}</view>
+        <view class="tpl-info">
+          <view class="tpl-name">{{item.name}}</view>
+          <view class="tpl-desc">{{item.description}}</view>
+        </view>
+        <view class="tpl-stars">⭐{{item.stars}}</view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

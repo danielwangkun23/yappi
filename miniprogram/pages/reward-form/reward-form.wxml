@@ -1,0 +1,16 @@
+<scroll-view scroll-y class="form-page">
+  <view class="fl-label">奖励名称</view>
+  <input class="fi" placeholder="例如：看动画片" maxlength="12" bindinput="onNameInput" value="{{form.name}}" />
+
+  <view class="fl-label">选择图标</view>
+  <view class="ep-grid">
+    <view wx:for="{{rewardEmojis}}" wx:key="index"
+      class="ep-opt {{item === form.emoji ? 'sel' : ''}}"
+      bindtap="onSelectEmoji" data-emoji="{{item}}">{{item}}</view>
+  </view>
+
+  <view class="fl-label">需要星星数</view>
+  <input class="fi" type="number" value="{{form.cost}}" bindinput="onCostInput" bindfocus="onCostFocus" bindblur="onCostBlur" style="width:160rpx" />
+
+  <button class="btn-p" style="margin-top:40rpx" bindtap="onSave">保存奖励 ✓</button>
+</scroll-view>

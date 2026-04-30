@@ -1,0 +1,60 @@
+<view class="container">
+  <!-- 步骤 1：添加孩子 -->
+  <view class="card" wx:if="{{step === 1}}">
+    <view class="step-label">第 1 步 · 共 2 步</view>
+    <view class="wiz-title">👋 欢迎使用 Yappi！</view>
+    <view class="wiz-sub">先添加你的第一个孩子</view>
+
+    <view class="fl-label">孩子的名字</view>
+    <input class="fi" placeholder="例如：小明" maxlength="10" bindinput="onNameInput" value="{{childName}}" />
+
+    <view class="fl-label" style="margin-top:24rpx">选择头像</view>
+    <view class="av-grid">
+      <view
+        wx:for="{{avatars}}" wx:key="index"
+        class="av-opt {{item === selAvatar ? 'sel' : ''}}"
+        bindtap="onSelectAvatar"
+        data-avatar="{{item}}"
+      >{{item}}</view>
+    </view>
+
+    <button class="btn-p" bindtap="onNextStep">下一步 →</button>
+  </view>
+
+  <!-- 步骤 2：选择任务模板 -->
+  <view class="card" wx:if="{{step === 2}}">
+    <view class="step-label">第 2 步 · 共 2 步</view>
+    <view class="wiz-title">🎯 选择默认任务</view>
+    <view class="wiz-sub">从模板中选几个开始，之后可随时修改</view>
+
+    <scroll-view scroll-x class="tpl-cats">
+      <view
+        wx:for="{{tplCats}}" wx:key="index"
+        class="tpl-cat-btn {{item === activeTplCat ? 'active' : ''}}"
+        bindtap="onFilterTplCat"
+        data-cat="{{item}}"
+      >{{item}}</view>
+    </scroll-view>
+
+    <scroll-view scroll-y class="tpl-list">
+      <view
+        wx:for="{{filteredTpls}}" wx:key="id"
+        class="tpl-item {{selTplIds.includes(item.id) ? 'sel' : ''}}"
+        bindtap="onToggleTpl"
+        data-id="{{item.id}}"
+      >
+        <view class="tpl-emoji">{{item.emoji}}</view>
+        <view class="tpl-info">
+          <view class="tpl-name">{{item.name}}</view>
+          <view class="tpl-meta">{{item.category}} · ⭐{{item.stars}}</view>
+        </view>
+        <view class="tpl-check">{{selTplIds.includes(item.id) ? '✅' : ''}}</view>
+      </view>
+    </scroll-view>
+
+    <view class="sel-count">已选 {{selTplIds.length}} 个任务</view>
+
+    <button class="btn-p" bindtap="onFinish" loading="{{loading}}">开始使用 🎉</button>
+    <button class="btn-s" bindtap="onSkip">跳过，之后再设置</button>
+  </view>
+</view>

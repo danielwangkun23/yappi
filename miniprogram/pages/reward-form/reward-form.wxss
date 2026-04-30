@@ -1,0 +1,12 @@
+.form-page {
+  padding: 32rpx 36rpx 120rpx;
+  background: var(--bg);
+  min-height: 100vh;
+}
+.ep-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10rpx; margin-bottom: 24rpx; }
+.ep-opt {
+  height: 80rpx; border-radius: 18rpx; border: 4rpx solid transparent;
+  background: #F5F0FF; font-size: 40rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.ep-opt.sel { border-color: var(--p); background: #EDE0FF; }

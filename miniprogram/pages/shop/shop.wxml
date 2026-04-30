@@ -1,0 +1,32 @@
+<view class="page">
+  <!-- 星星余额 -->
+  <view class="stars-bar">
+    <view>
+      <view class="sb-lbl">我的星星</view>
+      <view class="sb-num">⭐ {{curChild.stars}}</view>
+    </view>
+    <text style="font-size:68rpx">🎁</text>
+  </view>
+
+  <!-- 奖励网格 -->
+  <view class="shop-grid" wx:if="{{rewards.length}}">
+    <view
+      wx:for="{{rewards}}" wx:key="id"
+      class="rc {{item.redeemed ? 'done' : ''}} {{item.cantAfford ? 'cant-card' : ''}}"
+      bindtap="onRedeem"
+      data-id="{{item.id}}"
+    >
+      <text class="rc-emoji">{{item.emoji}}</text>
+      <view class="rc-name">{{item.name}}</view>
+      <view class="rc-cost {{item.cantAfford ? 'cant' : ''}}">
+        {{item.redeemed ? '✓ 已兑换' : '⭐' + item.cost}}
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-state" wx:else>
+    <text class="es-icon">🎁</text>
+    <view class="es-text">还没有奖励</view>
+    <view class="es-sub">去家长面板添加吧</view>
+  </view>
+</view>

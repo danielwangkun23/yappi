@@ -1,0 +1,89 @@
+<view class="page">
+  <!-- 头部 -->
+  <view class="report-hdr">
+    <view class="rpt-child">{{curChild.avatar || '🌟'}} {{curChild.name}}</view>
+    <view class="rpt-title">成长报告</view>
+  </view>
+
+  <!-- 月份导航 -->
+  <view class="month-nav">
+    <view class="mn-btn" bindtap="onPrevMonth">‹</view>
+    <view class="mn-label">{{monthLabel}}</view>
+    <view class="mn-btn" bindtap="onNextMonth">›</view>
+  </view>
+
+  <!-- Tab 切换 -->
+  <view class="tab-row">
+    <view class="tab-item {{activeTab === 'stats' ? 'active' : ''}}" bindtap="onTabSwitch" data-tab="stats">📊 数据统计</view>
+    <view class="tab-item {{activeTab === 'ledger' ? 'active' : ''}}" bindtap="onTabSwitch" data-tab="ledger">📋 星星流水</view>
+  </view>
+
+  <!-- 统计面板 -->
+  <block wx:if="{{activeTab === 'stats'}}">
+    <view class="stat-grid">
+      <view class="stat-card">
+        <view class="stat-icon">✅</view>
+        <view class="stat-num">{{stats.totalTasks}}</view>
+        <view class="stat-lbl">完成任务</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-icon">⭐</view>
+        <view class="stat-num">{{stats.totalStars}}</view>
+        <view class="stat-lbl">获得星星</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-icon">🔥</view>
+        <view class="stat-num">{{stats.maxStreak}}<text class="stat-unit">天</text></view>
+        <view class="stat-lbl">最长连续</view>
+      </view>
+      <view class="stat-card">
+        <view class="stat-icon">🎯</view>
+        <view class="stat-num" style="color:var(--gn)">{{stats.rate}}</view>
+        <view class="stat-lbl">完成率</view>
+      </view>
+    </view>
+
+    <view class="report-card">
+      <view class="rc-title">各类任务完成情况</view>
+      <view wx:if="{{catRows.length}}">
+        <view wx:for="{{catRows}}" wx:key="cat" class="bm-row">
+          <view class="bm-cat" style="background:{{item.color}}22">{{item.emoji}}</view>
+          <view class="bm-info">
+            <view class="bm-top">
+              <view class="bm-name">{{item.cat}}</view>
+              <view class="bm-nums">{{item.done}}/{{item.benchmark}}</view>
+            </view>
+            <view class="bm-bar-wrap">
+              <view class="bm-bar" style="width:{{item.pct}}%;background:{{item.color}}"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view wx:else class="no-data">本月暂无数据</view>
+    </view>
+
+    <view class="report-card">
+      <view class="rc-title">每日完成趋势</view>
+      <canvas type="2d" id="trend-chart" class="trend-canvas"></canvas>
+    </view>
+  </block>
+
+  <!-- 流水面板 -->
+  <block wx:if="{{activeTab === 'ledger'}}">
+    <view class="report-card" style="margin-top:20rpx">
+      <view wx:if="{{ledger.length}}">
+        <view wx:for="{{ledger}}" wx:key="index" class="ledger-item">
+          <view class="ledger-icon">{{item.icon}}</view>
+          <view class="ledger-info">
+            <view class="ledger-title">{{item.title}}</view>
+            <view class="ledger-date">{{item.dateLabel}}</view>
+          </view>
+          <view class="ledger-amount {{item.type === 'earn' ? 'earn' : 'spend'}}">
+            {{item.type === 'earn' ? '+' : ''}}{{item.amount}} ⭐
+          </view>
+        </view>
+      </view>
+      <view wx:else class="no-data">本月暂无流水记录</view>
+    </view>
+  </block>
+</view>

@@ -1,0 +1,36 @@
+{
+  "pages": [
+    "pages/auth/auth",
+    "pages/wizard/wizard",
+    "pages/home/home",
+    "pages/shop/shop",
+    "pages/report/report",
+    "pages/parent/parent",
+    "pages/task-form/task-form",
+    "pages/reward-form/reward-form",
+    "pages/child-form/child-form"
+  ],
+  "tabBar": {
+    "color": "#9B8FAE",
+    "selectedColor": "#9B6BFF",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "white",
+    "list": [
+      { "pagePath": "pages/home/home", "text": "主页" },
+      { "pagePath": "pages/shop/shop", "text": "奖励" },
+      { "pagePath": "pages/report/report", "text": "报告" },
+      { "pagePath": "pages/parent/parent", "text": "家长" }
+    ]
+  },
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#9B6BFF",
+    "navigationBarTitleText": "Yappi",
+    "navigationBarTextStyle": "white"
+  },
+  "networkTimeout": {
+    "request": 10000
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

@@ -1,0 +1,13 @@
+<scroll-view scroll-y class="form-page">
+  <view class="fl-label">孩子的名字</view>
+  <input class="fi" placeholder="例如：小明" maxlength="10" bindinput="onNameInput" value="{{form.name}}" style="margin-bottom:24rpx" />
+
+  <view class="fl-label">选择头像</view>
+  <view class="av-grid">
+    <view wx:for="{{avatars}}" wx:key="index"
+      class="av-opt {{item === form.avatar ? 'sel' : ''}}"
+      bindtap="onSelectAvatar" data-avatar="{{item}}">{{item}}</view>
+  </view>
+
+  <button class="btn-p" style="margin-top:40rpx" bindtap="onSave">保存 ✓</button>
+</scroll-view>

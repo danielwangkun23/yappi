@@ -1,0 +1,38 @@
+.page { min-height: 100vh; background: var(--bg); padding-bottom: 200rpx; }
+
+.stars-bar {
+  background: linear-gradient(135deg, var(--or), #FFD700);
+  margin: 24rpx 36rpx;
+  border-radius: 32rpx;
+  padding: 26rpx 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+}
+.sb-lbl { font-size: 22rpx; font-weight: 700; opacity: 0.85; }
+.sb-num { font-size: 44rpx; font-weight: 900; }
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  padding: 0 36rpx;
+}
+.rc {
+  background: #fff;
+  border-radius: 36rpx;
+  padding: 28rpx 20rpx;
+  text-align: center;
+  box-shadow: var(--sh);
+  border: 4rpx solid transparent;
+}
+.rc.done { border-color: var(--gn); background: #F0FFF4; }
+.rc-emoji { font-size: 68rpx; display: block; margin-bottom: 14rpx; }
+.rc-name { font-size: 24rpx; font-weight: 800; color: var(--text); margin-bottom: 12rpx; }
+.rc-cost {
+  display: inline-flex; align-items: center; gap: 6rpx;
+  background: #FFF3CD; border-radius: 32rpx;
+  padding: 6rpx 18rpx; font-size: 22rpx; font-weight: 800; color: #8B6914;
+}
+.rc-cost.cant { background: #F5F0FF; color: var(--muted); }

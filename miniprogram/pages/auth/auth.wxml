@@ -1,0 +1,36 @@
+<view class="container">
+  <!-- 登录步骤 -->
+  <block wx:if="{{step === 'login'}}">
+    <view class="logo">⭐</view>
+    <view class="title">Yappi</view>
+    <view class="sub">小勇士成长记</view>
+
+    <button class="wx-btn" bindtap="onWxLogin" loading="{{loading}}" disabled="{{loading}}">
+      <text class="wx-icon">💬</text> 微信一键登录
+    </button>
+
+    <view class="err-msg" wx:if="{{errMsg}}">{{errMsg}}</view>
+  </block>
+
+  <!-- 注册步骤：设置昵称 -->
+  <block wx:if="{{step === 'register'}}">
+    <view class="logo">👋</view>
+    <view class="title">欢迎加入！</view>
+    <view class="sub">设置一个昵称，方便识别你的账号</view>
+
+    <input
+      class="fi"
+      placeholder="输入昵称（如：小明爸爸）"
+      maxlength="20"
+      bindinput="onUsernameInput"
+      value="{{username}}"
+    />
+
+    <view class="err-msg" wx:if="{{errMsg}}">{{errMsg}}</view>
+
+    <button class="btn-p" bindtap="onRegister" loading="{{loading}}" disabled="{{loading}}">
+      开始使用 🎉
+    </button>
+    <button class="btn-s" bindtap="onBack">返回</button>
+  </block>
+</view>
