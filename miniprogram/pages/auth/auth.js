@@ -19,6 +19,7 @@ Page({
       const result = await auth.login()
       if (!result.isNew) {
         // 已有账号，直接进入
+        getApp().globalData.isGuest = false
         getApp().globalData.parent = result.parent
         await getApp().loadCoreData()
         const children = getApp().globalData.children
@@ -55,6 +56,7 @@ Page({
     this.setData({ loading: true, errMsg: '' })
     try {
       const parent = await auth.register(username, this.data.pendingOpenid)
+      getApp().globalData.isGuest = false
       getApp().globalData.parent = parent
       wx.reLaunch({ url: '/pages/wizard/wizard' })
     } catch (e) {
@@ -66,5 +68,9 @@ Page({
 
   onBack() {
     this.setData({ step: 'login', errMsg: '', username: '' })
+  },
+
+  onGuestMode() {
+    getApp().enterGuestMode()
   },
 })

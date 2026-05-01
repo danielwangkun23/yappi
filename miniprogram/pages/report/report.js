@@ -68,6 +68,11 @@ Page({
 
     this.setData({ monthLabel: `${y}年${m}月` })
 
+    if (getApp().globalData.isGuest) {
+      this._loadGuestReport(y, m, mStr, daysInPeriod)
+      return
+    }
+
     const [logs, redemptions] = await Promise.all([
       db.getLogsByMonth(curChild.id, start, end),
       db.getRedemptionsByMonth(curChild.id, start + 'T00:00:00', end + 'T23:59:59'),
@@ -146,10 +151,51 @@ Page({
     wx.nextTick(() => this._drawTrend(y, m, daysInPeriod, dateCounts))
   },
 
-  _drawTrend(y, m, days, dailyMap) {
+  _loadGuestReport(y, m, mStr, daysInPeriod) {
+    const tasks = getApp().globalData.tasks || []
+    // 生成模拟日志：每天随机完成 2-4 个任务
+    const dateCounts = {}
+    const earnItems = []
+    const cats = ['学习', '习惯', '品德', '运动']
+    for (let i = 0; i < daysInPeriod; i++) {
+      const d = String(i + 1).padStart(2, '0')
+      const dateStr = `${y}-${mStr}-${d}`
+      const count = 2 + (i % 3)  // 2~4 个
+      dateCounts[dateStr] = count
+      const dayTasks = tasks.slice(0, count)
+      dayTasks.forEach((t) => {
+        earnItems.push({ type: 'earn', icon: '⭐', title: t.name, amount: t.stars, date: dateStr, dateLabel: dateStr.slice(5) })
+      })
+    }
+    const totalTasks = earnItems.length
+    const totalStars = earnItems.reduce((s, l) => s + l.amount, 0)
+    const maxStreak = Math.min(daysInPeriod, 7)
+    const dailyCount = tasks.filter((t) => t.frequency === 'daily').length
+    const benchmark = dailyCount * daysInPeriod
+    const rate = benchmark > 0 ? Math.round(totalTasks / benchmark * 100) + '%' : '-'
+    this.setData({ stats: { totalTasks, totalStars, maxStreak, rate } })
+
+    const catRows = cats.map((cat) => {
+      const catTasks = tasks.filter((t) => t.category === cat)
+      if (!catTasks.length) return null
+      const catDone = earnItems.filter((l) => catTasks.find((t) => t.name === l.title)).length
+      const pct = Math.min(100, Math.round(catDone / (catTasks.length * daysInPeriod) * 100))
+      return { cat, emoji: CAT_EMOJI[cat], color: CAT_COLOR[cat], done: catDone, benchmark: catTasks.length * daysInPeriod, pct }
+    }).filter(Boolean)
+    this.setData({ catRows, ledger: earnItems.slice().reverse() })
+    wx.nextTick(() => this._drawTrend(y, m, daysInPeriod, dateCounts))
+  },
+
+  _drawTrend(y, m, days, dailyMap, retryCount = 0) {
     const mStr = String(m).padStart(2, '0')
     wx.createSelectorQuery().in(this).select('#trend-chart').fields({ node: true, size: true }).exec((res) => {
-      if (!res[0]?.node) return
+      if (!res[0]?.node) {
+        // Canvas 未准备好，重试最多3次
+        if (retryCount < 3) {
+          setTimeout(() => this._drawTrend(y, m, days, dailyMap, retryCount + 1), 100)
+        }
+        return
+      }
       const canvas = res[0].node
       const W = res[0].width || 300
       const H = 120

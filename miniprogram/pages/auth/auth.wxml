@@ -9,6 +9,8 @@
       <text class="wx-icon">💬</text> 微信一键登录
     </button>
 
+    <view class="guest-btn" bindtap="onGuestMode">先体验一下 →</view>
+
     <view class="err-msg" wx:if="{{errMsg}}">{{errMsg}}</view>
   </block>
 

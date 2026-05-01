@@ -15,6 +15,10 @@ Page({
   },
 
   onShow() {
+    if (getApp().globalData.isGuest) {
+      wx.showModal({ title: '登录后使用', content: '登录后即可管理孩子档案、任务和奖励。', confirmText: '去登录', showCancel: false, success: () => wx.reLaunch({ url: '/pages/auth/auth' }) })
+      return
+    }
     const app = getApp()
     this.setData({
       parent: app.globalData.parent || {},

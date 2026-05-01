@@ -10,6 +10,11 @@ Page({
   onShow() {
     const app = getApp()
     this.setData({ curChild: app.globalData.curChild || {} })
+    if (app.globalData.isGuest) {
+      const rewards = (app.globalData.rewards || []).map((r) => ({ ...r, redeemed: false, cantAfford: (app.globalData.curChild?.stars || 0) < r.cost }))
+      this.setData({ rewards, redeemedIds: [] })
+      return
+    }
     this._loadRedemptions()
   },
 
@@ -27,6 +32,10 @@ Page({
   },
 
   async onRedeem(e) {
+    if (getApp().globalData.isGuest) {
+      wx.showModal({ title: '登录后使用', content: '登录后即可兑换奖励，激励孩子继续努力！', confirmText: '去登录', success: (r) => { if (r.confirm) wx.reLaunch({ url: '/pages/auth/auth' }) } })
+      return
+    }
     const rid = e.currentTarget.dataset.id
     const { rewards, curChild, redeemedIds } = this.data
     const reward = rewards.find((r) => r.id === rid)

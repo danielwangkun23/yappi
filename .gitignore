@@ -1,0 +1,14 @@
+# Claude Code
+.claude/
+
+# Supabase
+supabase/.temp/
+
+# WeChat Mini Program
+node_modules/
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/

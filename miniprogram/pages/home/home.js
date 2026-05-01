@@ -34,9 +34,12 @@ Page({
   },
 
   async _refreshLogs() {
-    const { curChild, tasks } = this.data
+    const { curChild } = this.data
     if (!curChild.id) return
-
+    if (getApp().globalData.isGuest) {
+      this._buildUI()
+      return
+    }
     const logs = await db.getTodayLogs(curChild.id, today())
     const todayLogIds = (logs || []).map((l) => l.task_id)
     this.setData({ todayLogIds })
@@ -110,6 +113,10 @@ Page({
   },
 
   async onHandleTask(e) {
+    if (getApp().globalData.isGuest) {
+      wx.showModal({ title: '登录后使用', content: '登录后即可完成任务、积累星星，记录孩子的成长！', confirmText: '去登录', success: (r) => { if (r.confirm) wx.reLaunch({ url: '/pages/auth/auth' }) } })
+      return
+    }
     const tid = e.currentTarget.dataset.id
     const { todayLogIds, tasks, curChild } = this.data
     if (todayLogIds.includes(tid)) return
